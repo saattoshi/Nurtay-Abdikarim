@@ -1,0 +1,1582 @@
+/* =============================================
+   SIYAR LAW — styles.css
+   Mobile-first: base styles = 375px phone.
+   Wider screens use min-width overrides below.
+   ============================================= */
+
+
+/* =============================================
+   1. DESIGN TOKENS (CSS Custom Properties)
+   Change values here to restyle the whole site.
+   ============================================= */
+:root {
+  /* Colors — near-black + gold, warmed slightly (faint brown undertone) */
+  --color-bg:          #0c0b09;   /* main background — warm near-black */
+  --color-bg-alt:      #100e0b;   /* slightly lifted bg for alternate sections */
+  --color-bg-card:     #16130f;   /* card/panel backgrounds */
+  --color-gold:        #c8a96e;   /* accent gold — buttons, borders, highlights */
+  --color-gold-hover:  #dfc08a;   /* gold on hover */
+  --color-text:        #f5f3ec;   /* main body text — warm off-white */
+  --color-text-muted:  #a39c8f;   /* secondary/muted text (AA on the dark bg) */
+  --color-border:      rgba(200, 169, 110, 0.18); /* subtle gold hairline */
+
+  /* Typography — three roles, all carrying full Kazakh Cyrillic
+     display: editorial/legal serif · body: Cyrillic-native sans · mono: data layer */
+  --font-display: 'Spectral', Georgia, serif;             /* headings */
+  --font-body:    'Golos Text', system-ui, sans-serif;    /* body text */
+  --font-mono:    'IBM Plex Mono', ui-monospace, monospace; /* labels, numbers, dates */
+
+  /* Font sizes — mobile base */
+  --size-xs:   0.75rem;   /* 12px */
+  --size-sm:   0.875rem;  /* 14px */
+  --size-base: 1rem;      /* 16px */
+  --size-md:   1.125rem;  /* 18px */
+  --size-lg:   1.375rem;  /* 22px */
+  --size-xl:   1.75rem;   /* 28px */
+  --size-2xl:  2.35rem;   /* ~38px */
+  --size-3xl:  3.25rem;   /* 52px */
+  --size-4xl:  4.5rem;    /* 72px — reserved for the hero headline */
+
+  /* Spacing */
+  --space-xs:  0.5rem;    /* 8px */
+  --space-sm:  1rem;      /* 16px */
+  --space-md:  1.5rem;    /* 24px */
+  --space-lg:  2.5rem;    /* 40px */
+  --space-xl:  4rem;      /* 64px */
+  --space-2xl: 6rem;      /* 96px */
+
+  /* Layout */
+  --max-width:    1200px;
+  --nav-height:   70px;
+  --radius-sm:    4px;
+  --radius-md:    8px;
+
+  /* Transitions */
+  --transition-fast:   0.2s ease;
+  --transition-normal: 0.35s ease;
+}
+
+
+/* =============================================
+   2. RESET & BASE STYLES
+   ============================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--size-base);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-body);
+  border: none;
+  background: none;
+}
+
+/* Film grain overlay — sits over the entire page at a very low opacity.
+   Breaks up the flat digital surface and gives it a tactile, premium feel.
+   pointer-events: none means it never blocks clicks or hover. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.038;
+  pointer-events: none;
+  z-index: 9998;
+  mix-blend-mode: overlay;
+}
+
+
+/* =============================================
+   3. REUSABLE COMPONENTS
+   ============================================= */
+
+/* --- Buttons --- */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.75rem;
+  font-family: var(--font-mono);
+  font-size: var(--size-sm);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+  white-space: nowrap;
+  min-height: 44px; /* minimum touch target for mobile */
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Outlined button — used in nav */
+.btn--outline {
+  border: 1px solid var(--color-gold);
+  color: var(--color-gold);
+  background: transparent;
+}
+.btn--outline:hover {
+  background: var(--color-gold);
+  color: var(--color-bg);
+}
+
+/* Filled gold button — used in hero and CTA */
+.btn--gold {
+  background: var(--color-gold);
+  color: var(--color-bg);
+  border: 1px solid var(--color-gold);
+}
+.btn--gold:hover {
+  background: var(--color-gold-hover);
+  border-color: var(--color-gold-hover);
+}
+
+/* --- Section labels (small caps above headings) --- */
+/* Mono utility face = the "case-file" / documentary detail used across the site. */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: var(--size-xs);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: var(--space-sm);
+}
+/* Thin gold line below every section label — a deliberate typographic detail */
+.section-label::after {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: var(--color-gold);
+  margin-top: 8px;
+  opacity: 0.7;
+}
+.section-label.centered::after {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Signature: a gold steppe-ornament mark above every centered section eyebrow.
+   Recurring, distinctive, and immediately recognisable across the page. */
+.section-label.centered::before {
+  content: '';
+  display: block;
+  width: min(260px, 62vw);
+  height: 16px;
+  margin: 0 auto var(--space-md);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 16'%3E%3Cg fill='none' stroke='%23c8a96e' stroke-width='1'%3E%3Cline x1='8' y1='8' x2='98' y2='8' stroke-opacity='0.35'/%3E%3Cpath d='M110 8 L120 2 L130 8 L120 14 Z'/%3E%3Cpath d='M120 5 L123 8 L120 11 L117 8 Z' stroke-opacity='0.6'/%3E%3Cline x1='142' y1='8' x2='232' y2='8' stroke-opacity='0.35'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* --- Section headlines --- */
+.section-headline {
+  font-family: var(--font-display);
+  font-size: var(--size-2xl);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--color-text);
+  margin-bottom: var(--space-md);
+}
+
+/* Centered versions for symmetrical sections */
+.centered {
+  text-align: center;
+}
+
+/* --- Section container — keeps content max-width and padded --- */
+.section-container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-sm);
+}
+
+/* --- Scroll-reveal animation --- */
+/* Items wipe up from a clipped baseline and settle — a deliberate reveal,
+   not a generic library fade-up. JS adds .is-visible when in viewport. */
+.reveal-item {
+  opacity: 0;
+  transform: translateY(20px);
+  clip-path: inset(0 0 12% 0);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal-item.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  clip-path: inset(0 0 0 0);
+}
+
+/* --- Keyboard focus — visible gold ring on every interactive element --- */
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+/* Pointer users don't get the ring */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* --- Engraved gold hairline — the recurring signature divider --- */
+.rule-gold {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-gold) 30%,
+    var(--color-gold) 70%,
+    transparent
+  );
+  opacity: 0.5;
+}
+
+
+/* =============================================
+   4. NAVIGATION
+   ============================================= */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--nav-height);
+  /* Transparent over hero; JS adds .scrolled class to darken it */
+  background: transparent;
+  transition: background var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+/* JS adds this class when the user scrolls past the hero */
+.site-header.scrolled {
+  background: rgba(12, 11, 9, 0.82);
+  box-shadow: 0 1px 0 var(--color-border);
+  /* Frosted glass effect — premium blur on the sticky nav */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--nav-height);
+  padding: 0 var(--space-sm);
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+/* Logo */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+.nav-logo-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+.nav-logo-text {
+  font-family: var(--font-display);
+  font-size: var(--size-md);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-text);
+}
+.nav-logo-law {
+  color: var(--color-gold);
+  margin-left: 0.3em;
+}
+
+/* Desktop nav links — hidden on mobile, shown at tablet+ */
+.nav-links {
+  display: none;
+  gap: var(--space-md);
+}
+
+.nav-link {
+  font-size: var(--size-sm);
+  font-weight: 400;
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+  transition: color var(--transition-fast);
+  position: relative;
+  padding-bottom: 2px;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-gold);
+  transition: width var(--transition-fast);
+}
+.nav-link:hover {
+  color: var(--color-text);
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Right side cluster: language toggle + CTA + hamburger */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* Language toggle pill */
+.lang-toggle {
+  display: flex;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.lang-btn {
+  padding: 0.35rem 0.75rem;
+  font-size: var(--size-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  background: transparent;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  min-height: 32px;
+}
+.lang-btn--active {
+  background: var(--color-gold);
+  color: var(--color-bg);
+}
+.lang-btn:hover:not(.lang-btn--active) {
+  color: var(--color-text);
+}
+
+/* Desktop CTA — hidden on mobile */
+.nav-cta {
+  display: none;
+}
+
+/* Hamburger button — visible on mobile only */
+.nav-hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0 8px;
+  background: none;
+  border: none;
+}
+.hamburger-line {
+  display: block;
+  height: 1.5px;
+  background: var(--color-text);
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+/* Hamburger turns into an X when menu is open */
+.nav-hamburger.is-open .hamburger-line:nth-child(1) {
+  transform: translateY(6.5px) rotate(45deg);
+}
+.nav-hamburger.is-open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+.nav-hamburger.is-open .hamburger-line:nth-child(3) {
+  transform: translateY(-6.5px) rotate(-45deg);
+}
+
+/* Mobile dropdown menu */
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  background: rgba(12, 11, 9, 0.98);
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-md) var(--space-sm) var(--space-lg);
+}
+.mobile-menu.is-open {
+  display: flex;
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+.mobile-nav-link {
+  font-size: var(--size-lg);
+  font-family: var(--font-display);
+  color: var(--color-text);
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.mobile-cta {
+  margin-top: var(--space-sm);
+  width: 100%;
+  text-align: center;
+}
+
+
+/* =============================================
+   5. HERO SECTION
+   ============================================= */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh; /* avoids mobile browser-chrome jump */
+  display: flex;
+  align-items: flex-end; /* text at bottom on mobile */
+  padding-bottom: var(--space-2xl);
+  overflow: hidden;
+}
+
+/* Background photo */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('../images/hero1.jpg');
+  background-size: cover;
+  /* On mobile: shift right so the face (not the monitor) is centered */
+  background-position: 72% center;
+  background-repeat: no-repeat;
+}
+/* Gradient overlay — dark at bottom for text legibility */
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(12, 11, 9, 0.95) 0%,
+    rgba(12, 11, 9, 0.7)  40%,
+    rgba(12, 11, 9, 0.3)  100%
+  );
+}
+
+/* Text sits above the gradient overlay */
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  padding: 0 var(--space-sm);
+}
+
+.hero-label {
+  font-family: var(--font-mono);
+  font-size: var(--size-xs);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: var(--space-md);
+}
+
+/* Signature ornament between eyebrow and headline — draws in on load */
+.hero-rule {
+  display: block;
+  width: 132px;
+  height: 14px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 132 14'%3E%3Cg fill='none' stroke='%23c8a96e' stroke-width='1'%3E%3Cpath d='M7 7 L13 2 L19 7 L13 12 Z'/%3E%3Cpath d='M13 4.5 L15.5 7 L13 9.5 L10.5 7 Z' stroke-opacity='0.6'/%3E%3Cline x1='25' y1='7' x2='130' y2='7' stroke-opacity='0.45'/%3E%3C/g%3E%3C/svg%3E") left center / contain no-repeat;
+  margin-bottom: var(--space-md);
+  transform-origin: left center;
+}
+
+.hero-headline {
+  font-family: var(--font-display);
+  font-size: var(--size-2xl);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin-bottom: var(--space-md);
+}
+
+.hero-subtext {
+  font-size: var(--size-md);
+  color: rgba(245, 243, 236, 0.82);
+  max-width: 480px;
+  margin-bottom: var(--space-lg);
+  line-height: 1.7;
+}
+
+/* ----- Hero load sequence -----
+   JS adds .is-loaded to .hero on DOMContentLoaded; children settle in order. */
+.hero-content > .hero-label,
+.hero-content > .hero-rule,
+.hero-content > .hero-headline,
+.hero-content > .hero-subtext,
+.hero-content > .hero-cta {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hero-content > .hero-rule {
+  transform: scaleX(0);
+  transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hero.is-loaded .hero-content > * {
+  opacity: 1;
+  transform: none;
+}
+.hero.is-loaded .hero-content > .hero-label    { transition-delay: 0.05s; }
+.hero.is-loaded .hero-content > .hero-rule     { transition-delay: 0.18s; }
+.hero.is-loaded .hero-content > .hero-headline { transition-delay: 0.30s; }
+.hero.is-loaded .hero-content > .hero-subtext  { transition-delay: 0.46s; }
+.hero.is-loaded .hero-content > .hero-cta      { transition-delay: 0.58s; }
+
+.hero-cta {
+  font-size: var(--size-sm);
+}
+
+/* Animated scroll indicator arrow */
+.hero-scroll-hint {
+  position: absolute;
+  bottom: var(--space-md);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+.scroll-arrow {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-right: 1.5px solid var(--color-gold);
+  border-bottom: 1.5px solid var(--color-gold);
+  transform: rotate(45deg);
+  animation: scroll-bounce 1.6s ease-in-out infinite;
+}
+@keyframes scroll-bounce {
+  0%, 100% { transform: rotate(45deg) translateY(0); opacity: 1; }
+  50%       { transform: rotate(45deg) translateY(6px); opacity: 0.4; }
+}
+
+
+/* =============================================
+   6. ABOUT SECTION
+   ============================================= */
+.about {
+  padding: var(--space-2xl) 0;
+  /* Warm glow from upper-left — feels like window light on the subject */
+  background:
+    radial-gradient(ellipse 55% 60% at -5% 20%, rgba(200, 169, 110, 0.07) 0%, transparent 70%),
+    var(--color-bg-alt);
+}
+
+.about .section-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+/* Photo column */
+.about-photo-col {
+  width: 100%;
+}
+.about-photo {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  /* Subtle gold frame */
+  box-shadow: 0 0 0 1px var(--color-border), 6px 6px 0 0 var(--color-gold);
+}
+
+/* Text column */
+.about-text-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-role {
+  font-size: var(--size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-md);
+  letter-spacing: 0.05em;
+}
+
+.about-body {
+  font-size: var(--size-base);
+  color: rgba(245, 245, 240, 0.8);
+  margin-bottom: var(--space-sm);
+  line-height: 1.8;
+}
+
+/* Stat counters row — 3-up grid that holds together down to 360px */
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Wrapper keeps number and + on the same line */
+.stat-value {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+}
+
+/* Mono figures = the "case-file" data treatment, tabular and precise */
+.stat-number {
+  font-family: var(--font-mono);
+  font-size: var(--size-xl);
+  font-weight: 500;
+  font-feature-settings: 'tnum';
+  letter-spacing: -0.03em;
+  color: var(--color-gold);
+  line-height: 1;
+}
+.stat-suffix {
+  font-family: var(--font-mono);
+  font-size: var(--size-md);
+  font-weight: 500;
+  color: var(--color-gold);
+  line-height: 1;
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem; /* 11px */
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-top: 8px;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+}
+
+
+/* =============================================
+   7. COMPANIES SECTION
+   ============================================= */
+.companies {
+  padding: var(--space-2xl) 0;
+  /* Glow from the right edge */
+  background:
+    radial-gradient(ellipse 50% 70% at 110% 50%, rgba(200, 169, 110, 0.05) 0%, transparent 65%),
+    var(--color-bg);
+}
+
+.companies .section-container {
+  margin-bottom: var(--space-xl);
+}
+
+/* Marquee wrapper clips overflow so logos scroll seamlessly */
+.marquee-wrapper {
+  overflow: hidden;
+  width: 100%;
+  /* Fade edges for a polished look */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+/* The track holds two copies of logos and scrolls left infinitely */
+.marquee-track {
+  display: flex;
+  gap: var(--space-lg);
+  width: max-content;
+  animation: marquee-scroll 28s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Individual logo placeholder */
+.logo-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 160px;
+  height: 60px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-md);
+  color: var(--color-text-muted);
+  font-size: var(--size-sm);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+.logo-item:hover {
+  border-color: var(--color-gold);
+  color: var(--color-text);
+}
+
+
+/* =============================================
+   8. CERTIFICATES SECTION
+   ============================================= */
+.certificates {
+  padding: var(--space-2xl) 0;
+  /* Glow from lower-left */
+  background:
+    radial-gradient(ellipse 60% 50% at -10% 90%, rgba(200, 169, 110, 0.06) 0%, transparent 65%),
+    var(--color-bg-alt);
+}
+
+.certificates .section-headline {
+  margin-bottom: var(--space-xl);
+}
+
+/* ----- Slider shell ----- */
+.cert-slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-xl);
+  /* tall enough to show the center card fully on mobile */
+  min-height: 420px;
+}
+
+/* Clips the slides — only the visible area shows through */
+.cert-slides-window {
+  position: relative;
+  flex: 1;
+  height: 420px;
+  overflow: hidden;
+}
+
+/* ----- Individual slide ----- */
+/* Each slide is absolutely positioned inside the window.
+   JS adds .is-active / .is-prev / .is-next / .is-hidden classes. */
+.cert-slide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* default: hidden behind center */
+  transform: translate(-50%, -50%) scale(0.8);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.45s ease, opacity 0.45s ease;
+}
+
+/* Center card — full size, fully visible */
+.cert-slide.is-active {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 3;
+}
+
+/* Left adjacent card */
+.cert-slide.is-prev {
+  transform: translate(calc(-50% - 270px), -50%) scale(0.88);
+  opacity: 0.65;
+  z-index: 2;
+}
+
+/* Right adjacent card */
+.cert-slide.is-next {
+  transform: translate(calc(-50% + 270px), -50%) scale(0.88);
+  opacity: 0.65;
+  z-index: 2;
+}
+
+/* All other cards: invisible */
+.cert-slide.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* On mobile: hide side cards so only the active one shows */
+@media (max-width: 639px) {
+  .cert-slide.is-prev,
+  .cert-slide.is-next {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* ----- Arrow buttons ----- */
+.cert-arrow {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-text-muted);
+  background: transparent;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+  z-index: 10;
+}
+.cert-arrow svg {
+  width: 20px;
+  height: 20px;
+}
+.cert-arrow:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+
+/* ----- Dot indicators ----- */
+.cert-dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+.cert-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  padding: 0;
+  opacity: 0.4;
+}
+.cert-dot.is-active {
+  background: var(--color-gold);
+  opacity: 1;
+  transform: scale(1.3);
+}
+
+/* ----- The certificate document itself ----- */
+/* Looks like a real certificate: white background, blue double border */
+.cert-doc {
+  width: 240px;
+  background: #ffffff;
+  border: 3px solid #2e4fcc;
+  padding: 5px;           /* gap between outer and inner border */
+  border-radius: 4px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Inner border creates the double-frame look */
+.cert-doc-inner {
+  border: 1.5px solid #2e4fcc;
+  padding: 20px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 7px;
+  min-height: 360px;
+}
+
+/* Org name + icon row at top */
+.cert-doc-org {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 8px;
+  font-family: Arial, sans-serif;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* Certificate title — large blue serif */
+.cert-doc-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2e4fcc;
+  text-align: center;
+  line-height: 1.3;
+  margin-top: 6px;
+}
+
+/* "Proudly presented to" line */
+.cert-doc-presented {
+  font-size: 8.5px;
+  font-family: Arial, sans-serif;
+  color: #888;
+  font-style: italic;
+}
+
+/* Recipient name — biggest text on the card */
+.cert-doc-name {
+  font-family: Georgia, serif;
+  font-size: 21px;
+  font-weight: 700;
+  color: #2e4fcc;
+  line-height: 1.2;
+}
+
+/* Description text */
+.cert-doc-desc {
+  font-size: 8px;
+  font-family: Arial, sans-serif;
+  color: #666;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* Date + ID rows */
+.cert-doc-meta {
+  width: 100%;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cert-doc-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 8px;
+  font-family: Arial, sans-serif;
+  color: #777;
+}
+
+/* Blue pill badge for date and ID values */
+.cert-doc-badge {
+  background: #2e4fcc;
+  color: #ffffff;
+  padding: 2px 7px;
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Bottom row: gold seal on left, signature on right */
+.cert-doc-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* Gold circular seal/stamp */
+.cert-doc-seal {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #e8c97a 0%, #b8860b 100%);
+  border: 2px solid #f0d060;
+  box-shadow: 0 2px 8px rgba(180, 140, 10, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.cert-doc-seal-top {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+.cert-doc-seal-year {
+  font-size: 8px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1;
+}
+
+/* Signature area: SVG scribble + name below */
+.cert-doc-sig {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 8px;
+  font-family: Arial, sans-serif;
+  color: #666;
+}
+
+
+/* =============================================
+   9. SERVICES SECTION
+   ============================================= */
+.services {
+  padding: var(--space-2xl) 0;
+  /* Glow from upper-right */
+  background:
+    radial-gradient(ellipse 55% 55% at 110% 10%, rgba(200, 169, 110, 0.07) 0%, transparent 65%),
+    var(--color-bg);
+}
+
+.services .section-headline {
+  margin-bottom: var(--space-xl);
+}
+
+/* 1-column on mobile */
+.services-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.service-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg) var(--space-md);
+  position: relative;
+  overflow: hidden;
+  transition: border-color var(--transition-normal), transform var(--transition-normal);
+}
+.service-card::before {
+  /* Gold left accent bar */
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--color-gold);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform var(--transition-normal);
+}
+.service-card:hover::before {
+  transform: scaleY(1);
+}
+.service-card:hover {
+  border-color: var(--color-gold);
+  transform: translateY(-2px);
+}
+
+/* Small gold diamond marker above each service — echoes the ornament motif */
+.service-title::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--color-gold);
+  transform: rotate(45deg);
+  margin-bottom: var(--space-md);
+  transition: background var(--transition-normal);
+}
+.service-card:hover .service-title::before {
+  background: var(--color-gold);
+}
+
+.service-title {
+  font-family: var(--font-display);
+  font-size: var(--size-xl);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-sm);
+  line-height: 1.3;
+}
+
+.service-body {
+  font-size: var(--size-base);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+
+/* =============================================
+   9b. PROCESS SECTION — earned, ordered timeline
+   ============================================= */
+.process {
+  padding: var(--space-2xl) 0;
+  /* Glow from lower-right, keeps the section rhythm varied */
+  background:
+    radial-gradient(ellipse 55% 60% at 105% 95%, rgba(200, 169, 110, 0.06) 0%, transparent 65%),
+    var(--color-bg-alt);
+}
+
+.process .section-headline {
+  margin-bottom: var(--space-xl);
+}
+
+.process-list {
+  list-style: none;
+  padding: 0;
+  max-width: 640px;
+  margin: var(--space-xl) auto 0;
+}
+
+/* Each step: number column + text column, with a connector line down the spine */
+.process-step {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: var(--space-md);
+  padding-bottom: var(--space-lg);
+  position: relative;
+}
+.process-step:last-child {
+  padding-bottom: 0;
+}
+/* Vertical hairline connecting one step to the next */
+.process-step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 0.6rem;
+  top: 2.1rem;
+  bottom: -0.1rem;
+  width: 1px;
+  background: var(--color-border);
+}
+
+.process-num {
+  font-family: var(--font-mono);
+  font-size: var(--size-lg);
+  font-weight: 500;
+  color: var(--color-gold);
+  line-height: 1;
+  padding-top: 0.2em;
+}
+
+.process-step-title {
+  font-family: var(--font-display);
+  font-size: var(--size-xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+}
+
+.process-step-desc {
+  font-size: var(--size-base);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  max-width: 46ch;
+}
+
+
+/* =============================================
+   10. FAQ SECTION
+   ============================================= */
+.faq {
+  padding: var(--space-2xl) 0;
+  /* Glow from the left */
+  background:
+    radial-gradient(ellipse 50% 80% at -5% 50%, rgba(200, 169, 110, 0.05) 0%, transparent 60%),
+    var(--color-bg-alt);
+}
+
+.faq .section-headline {
+  margin-bottom: var(--space-xl);
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: var(--space-xl);
+  border-top: 1px solid var(--color-border);
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* The question row is a button for accessibility */
+.faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-md) 0;
+  font-size: var(--size-md);
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+.faq-question:hover {
+  color: var(--color-gold);
+}
+
+/* The +/− icon */
+.faq-icon {
+  font-size: var(--size-xl);
+  color: var(--color-gold);
+  flex-shrink: 0;
+  transition: transform var(--transition-normal);
+  line-height: 1;
+}
+
+/* When open, rotate + to form an × */
+.faq-item.is-open .faq-icon {
+  transform: rotate(45deg);
+}
+
+/* Gold left border when open */
+.faq-item.is-open .faq-question {
+  color: var(--color-gold);
+}
+
+/* The answer panel — collapses via max-height animation */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+.faq-item.is-open .faq-answer {
+  max-height: 400px;
+  padding-bottom: var(--space-md);
+}
+
+.faq-answer p {
+  font-size: var(--size-base);
+  color: var(--color-text-muted);
+  line-height: 1.8;
+  /* Gold left bar on answer */
+  padding-left: var(--space-md);
+  border-left: 2px solid var(--color-gold);
+}
+
+
+/* =============================================
+   11. CTA SECTION
+   ============================================= */
+.cta-section {
+  padding: var(--space-2xl) 0;
+  /* Centered spotlight — the strongest glow on the page, drawing the eye here */
+  background:
+    radial-gradient(ellipse 80% 120% at 50% 0%, rgba(200, 169, 110, 0.11) 0%, transparent 65%),
+    var(--color-bg);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cta-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-md);
+}
+
+.cta-headline {
+  font-family: var(--font-display);
+  font-size: var(--size-2xl);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.cta-subtext {
+  font-size: var(--size-base);
+  color: var(--color-text-muted);
+  max-width: 460px;
+}
+
+.cta-btn {
+  padding: 1rem 2.5rem;
+  font-size: var(--size-base);
+}
+
+
+/* =============================================
+   12. FOOTER
+   ============================================= */
+.site-footer {
+  background: var(--color-bg-card);
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-2xl);
+}
+
+.footer-container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-sm);
+  display: grid;
+  /* Single column on mobile */
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+}
+
+.footer-logo {
+  margin-bottom: var(--space-sm);
+}
+
+.footer-tagline {
+  font-size: var(--size-sm);
+  color: var(--color-text-muted);
+}
+
+.footer-col-title {
+  font-family: var(--font-mono);
+  font-size: var(--size-xs);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: var(--space-md);
+}
+
+.footer-nav ul,
+.footer-services ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.footer-link {
+  font-size: var(--size-sm);
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast);
+}
+.footer-link:hover {
+  color: var(--color-gold);
+}
+
+.footer-contact-item {
+  font-size: var(--size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+/* Social icons row */
+.footer-socials {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.social-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+.social-icon svg {
+  width: 18px;
+  height: 18px;
+}
+.social-icon:hover {
+  color: var(--color-gold);
+  border-color: var(--color-gold);
+}
+
+/* Copyright bar */
+.footer-bottom {
+  margin-top: var(--space-xl);
+  padding: var(--space-md) var(--space-sm);
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+.footer-bottom p {
+  font-size: var(--size-xs);
+  color: var(--color-text-muted);
+}
+
+
+/* =============================================
+   13. TABLET — min-width: 640px
+   ============================================= */
+@media (min-width: 640px) {
+
+  /* Show desktop CTA in nav */
+  .nav-cta {
+    display: inline-flex;
+  }
+
+  /* Show desktop nav links */
+  .nav-links {
+    display: flex;
+  }
+
+  /* Hide hamburger */
+  .nav-hamburger {
+    display: none;
+  }
+
+  /* Hero: align content to left-center */
+  .hero {
+    align-items: center;
+    padding-bottom: 0;
+  }
+  /* On tablet/desktop: reposition so the monitor fills left and face shows right */
+  .hero-bg {
+    background-position: center center;
+  }
+  .hero-bg::after {
+    /* On wider screens, darken left side for text, let right side breathe */
+    background: linear-gradient(
+      to right,
+      rgba(12, 11, 9, 0.92) 0%,
+      rgba(12, 11, 9, 0.7)  50%,
+      rgba(12, 11, 9, 0.2)  100%
+    );
+  }
+  .hero-content {
+    padding: 0 var(--space-xl);
+  }
+  .hero-headline {
+    font-size: var(--size-3xl);
+  }
+
+  /* About: two columns side by side */
+  .about .section-container {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .about-photo-col {
+    width: 40%;
+    flex-shrink: 0;
+  }
+  .about-photo {
+    margin: 0;
+    max-width: 100%;
+  }
+
+  /* Certificates: side cards visible on tablet+ */
+  .cert-slide.is-prev,
+  .cert-slide.is-next {
+    opacity: 0.65;
+  }
+
+  /* Services: 3 columns */
+  .services-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Footer: 2 columns */
+  .footer-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+
+/* =============================================
+   14. DESKTOP — min-width: 1024px
+   ============================================= */
+@media (min-width: 1024px) {
+
+  /* Scale up section padding */
+  .about,
+  .companies,
+  .certificates,
+  .services,
+  .faq,
+  .cta-section {
+    padding: var(--space-2xl) 0;
+  }
+
+  /* Section container: full horizontal padding on large screens */
+  .section-container {
+    padding: 0 var(--space-xl);
+  }
+
+  /* Hero headline at full display scale */
+  .hero-headline {
+    font-size: var(--size-4xl);
+  }
+
+  /* Section headline larger */
+  .section-headline {
+    font-size: var(--size-3xl);
+  }
+
+  /* CTA headline larger */
+  .cta-headline {
+    font-size: var(--size-3xl);
+  }
+
+  /* Process: a touch more room for the number column */
+  .process-step {
+    grid-template-columns: 3.5rem 1fr;
+  }
+
+  /* Footer: 4 columns */
+  .footer-container {
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  }
+}
+
+
+/* =============================================
+   15. REDUCED MOTION
+   Respect users who ask for less motion — disable
+   reveals, the load sequence, marquee, scroll hint.
+   ============================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Make sure anything that starts hidden for animation is shown */
+  .reveal-item,
+  .hero-content > * {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+}
