@@ -1,2 +1,5 @@
-.claude
-CLAUDE.md
+# macOS
+.DS_Store
+
+# Local editor / Claude config
+.claude/
