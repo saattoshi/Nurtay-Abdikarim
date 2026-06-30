@@ -8,11 +8,19 @@
   <title>Нуртай Абдикарим — Адвокат</title>
   <meta name="description" content="Квалифицированный юрист по гражданскому, административному и уголовному праву. Более 20 лет опыта. Запишитесь на консультацию." />
 
+  <!-- Keywords: largely ignored by Google, kept for completeness / minor engines -->
+  <meta name="keywords" content="адвокат Алматы, юрист Алматы, адвокат Казахстан, юридические услуги, консультация юриста, адвокат по уголовным делам, гражданское право, уголовное право, административное право, защита в суде, представительство в суде, Нуртай Абдикарим, адвокат, заңгер" />
+
+  <!-- Canonical URL — tells Google the single official address of this page -->
+  <link rel="canonical" href="https://kodex.kz/" />
+
   <!-- Open Graph tags for sharing on social media -->
   <meta property="og:title" content="Нуртай Абдикарим — Адвокат" />
   <meta property="og:description" content="Надёжные юридические решения для вас и вашего бизнеса." />
-  <meta property="og:image" content="images/hero1.jpg" />
+  <meta property="og:image" content="https://kodex.kz/images/hero1.jpg" />
+  <meta property="og:url" content="https://kodex.kz/" />
   <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ru_RU" />
 
   <!-- Browser UI color + favicon (inline SVG of the shield mark) -->
   <meta name="theme-color" content="#0c0b09" />
@@ -25,6 +33,35 @@
   <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Spectral:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- Structured data (JSON-LD) — tells Google this is a lawyer's business.
+       This is the modern, search-engine-respected replacement for keywords. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Attorney",
+    "name": "Нуртай Абдикарим — Адвокат",
+    "description": "Квалифицированный адвокат в Алматы по гражданскому, административному и уголовному праву. Более 20 лет опыта.",
+    "url": "https://kodex.kz/",
+    "image": "https://kodex.kz/images/hero1.jpg",
+    "telephone": "+77781606242",
+    "email": "advokat.kzt@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "ул. Наурызбай Батыра 8, офис 23",
+      "addressLocality": "Алматы",
+      "addressRegion": "Алматы",
+      "addressCountry": "KZ"
+    },
+    "areaServed": {
+      "@type": "City",
+      "name": "Алматы"
+    },
+    "knowsLanguage": ["ru", "kk"],
+    "knowsAbout": ["Гражданское право", "Уголовное право", "Административное право"],
+    "sameAs": ["https://wa.me/77781606242"]
+  }
+  </script>
 </head>
 
 <body>
