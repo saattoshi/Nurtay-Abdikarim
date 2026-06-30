@@ -784,14 +784,14 @@ body::after {
   gap: var(--space-sm);
   margin-top: var(--space-xl);
   /* tall enough to show the center card fully on mobile */
-  min-height: 420px;
+  min-height: 360px;
 }
 
 /* Clips the slides — only the visible area shows through */
 .cert-slides-window {
   position: relative;
   flex: 1;
-  height: 420px;
+  height: 360px;
   overflow: hidden;
 }
 
@@ -896,155 +896,75 @@ body::after {
   transform: scale(1.3);
 }
 
-/* ----- The certificate document itself ----- */
-/* Looks like a real certificate: white background, blue double border */
-.cert-doc {
-  width: 240px;
-  background: #ffffff;
-  border: 3px solid #2e4fcc;
-  padding: 5px;           /* gap between outer and inner border */
-  border-radius: 4px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+/* ----- The certificate card (gilded frame) ----- */
+/* One consistent landscape frame holds either the real scan
+   or a styled placeholder, so all three slides match. */
+.cert-card {
+  width: clamp(300px, 78vw, 420px);
+  aspect-ratio: 2339 / 1654;   /* matches the scanned certificate */
+  border: 1px solid var(--color-gold);
+  border-radius: var(--radius-sm);
+  padding: 8px;                /* the matte/frame gap */
+  background: var(--color-bg-card);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
 }
 
-/* Inner border creates the double-frame look */
-.cert-doc-inner {
-  border: 1.5px solid #2e4fcc;
-  padding: 20px 16px 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 7px;
-  min-height: 360px;
+/* Photo card — frames the real scanned certificate */
+.cert-card--photo {
+  margin: 0;
 }
-
-/* Org name + icon row at top */
-.cert-doc-org {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  font-size: 8px;
-  font-family: Arial, sans-serif;
-  color: #555;
-  line-height: 1.4;
-}
-
-/* Certificate title — large blue serif */
-.cert-doc-title {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 15px;
-  font-weight: 700;
-  color: #2e4fcc;
-  text-align: center;
-  line-height: 1.3;
-  margin-top: 6px;
-}
-
-/* "Proudly presented to" line */
-.cert-doc-presented {
-  font-size: 8.5px;
-  font-family: Arial, sans-serif;
-  color: #888;
-  font-style: italic;
-}
-
-/* Recipient name — biggest text on the card */
-.cert-doc-name {
-  font-family: Georgia, serif;
-  font-size: 21px;
-  font-weight: 700;
-  color: #2e4fcc;
-  line-height: 1.2;
-}
-
-/* Description text */
-.cert-doc-desc {
-  font-size: 8px;
-  font-family: Arial, sans-serif;
-  color: #666;
-  line-height: 1.6;
-  text-align: center;
-}
-
-/* Date + ID rows */
-.cert-doc-meta {
+.cert-card--photo img {
+  display: block;
   width: 100%;
-  margin-top: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.cert-doc-meta-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 8px;
-  font-family: Arial, sans-serif;
-  color: #777;
-}
-
-/* Blue pill badge for date and ID values */
-.cert-doc-badge {
-  background: #2e4fcc;
-  color: #ffffff;
-  padding: 2px 7px;
+  height: 100%;
+  object-fit: cover;
   border-radius: 2px;
-  font-family: var(--font-mono);
-  font-size: 8px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
 }
 
-/* Bottom row: gold seal on left, signature on right */
-.cert-doc-footer {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 8px;
-}
-
-/* Gold circular seal/stamp */
-.cert-doc-seal {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #e8c97a 0%, #b8860b 100%);
-  border: 2px solid #f0d060;
-  box-shadow: 0 2px 8px rgba(180, 140, 10, 0.5);
+/* Placeholder card — clearly "coming soon", matched to the dark theme */
+.cert-card--placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0;
+  gap: var(--space-xs);
+  text-align: center;
+  /* dashed inner frame inside the gold outer border */
+  background:
+    var(--color-bg-card)
+    padding-box;
+  position: relative;
+}
+.cert-card--placeholder::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px dashed var(--color-border);
+  border-radius: 2px;
+  pointer-events: none;
 }
 
-.cert-doc-seal-top {
-  font-size: 11px;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1;
+.cert-ph-icon {
+  width: 38px;
+  height: 38px;
+  color: var(--color-gold);
+  opacity: 0.85;
 }
 
-.cert-doc-seal-year {
-  font-size: 8px;
+.cert-ph-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
   font-weight: 600;
-  color: #fff;
-  line-height: 1;
+  color: var(--color-text);
+  letter-spacing: 0.01em;
 }
 
-/* Signature area: SVG scribble + name below */
-.cert-doc-sig {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  font-size: 8px;
-  font-family: Arial, sans-serif;
-  color: #666;
+.cert-ph-sub {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
 
 
