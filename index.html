@@ -22,9 +22,14 @@
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="ru_RU" />
 
-  <!-- Browser UI color + favicon (inline SVG of the shield mark) -->
+  <!-- Browser UI color -->
   <meta name="theme-color" content="#0c0b09" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%230c0b09'/%3E%3Cpath d='M20 4 L34 11 L34 22 C34 30 27 35 20 37 C13 35 6 30 6 22 L6 11 Z' fill='none' stroke='%23c8a96e' stroke-width='2'/%3E%3Cpath d='M13 20 L20 13 L27 20' fill='none' stroke='%23c8a96e' stroke-width='2'/%3E%3C/svg%3E" />
+
+  <!-- Favicons — real files at the site root so Google Search can crawl and
+       display the logo (a data: URI is not reliably picked up by Google). -->
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
   <!-- Google Fonts — all three carry full Cyrillic incl. Kazakh (cyrillic-ext):
        Spectral = display serif · Golos Text = body · IBM Plex Mono = data/labels -->
